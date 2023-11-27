@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using RabbitMQ.Client;
-using System.Text;
+﻿using MassTransit;
+using Messages;
+using Microsoft.AspNetCore.Mvc;
+using Producer.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,10 +12,14 @@ namespace Producer
     public class ActionController : ControllerBase
     {
         private readonly ILogger<ActionController> _logger;
+        private readonly IBus _bus;
 
-        public ActionController(ILogger<ActionController> logger)
+        public ActionController(
+            ILogger<ActionController> logger,
+            IBus bus)
         {
             _logger = logger;
+            _bus = bus;
         }
 
         // GET: api/<Action>
@@ -26,7 +31,7 @@ namespace Producer
 
         // POST api/<Action>
         [HttpPost]
-        public IActionResult Post([FromBody] string value)
+        public async Task<IActionResult> PostAsync([FromBody] ActionModel value)
         {
             // ToDo: DDD business logic, validation
             // Send a command thorugh mediatr to Handler
@@ -35,25 +40,9 @@ namespace Producer
             // Aggregate model pushed events into RabbitMq
 
             // Move to separate service
-            var factory = new ConnectionFactory { HostName = "localhost" };
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
-
-            channel.QueueDeclare(queue: "producerQueue",
-                                 durable: false,
-                                 exclusive: false,
-                                 autoDelete: false,
-                                 arguments: null);
-
-            string message = $"Producer: DDD event from Action: {value}";
-            var body = Encoding.UTF8.GetBytes(message);
-
-            channel.BasicPublish(exchange: string.Empty,
-                                routingKey: "hello",
-                                basicProperties: null,
-                                body: body);
-
-            _logger.LogDebug("Post action event sent ");
+            Uri uri = new Uri("rabbitmq://localhost/testQueue");
+            var endPoint = await _bus.GetSendEndpoint(uri);
+            await endPoint.Send(new TestMessage { Id = value.Id, Name = value.Name });
 
             return Ok();
         }

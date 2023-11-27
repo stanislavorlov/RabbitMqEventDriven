@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Newtonsoft.Json;
 using System.Net;
 using System.Security.Authentication;
@@ -46,7 +47,8 @@ namespace TestAspNetCoreWebAPI.Controllers
 
             HttpClient httpClient = new HttpClient(handler);
 
-            var httpResponse = await httpClient.PostAsJsonAsync(_producerApiURI + "/api/action", $"Hello world {DateTime.UtcNow}");
+            var httpResponse = await httpClient.PostAsJsonAsync(_producerApiURI + "/api/action",
+                new { Id = 1, Name = "Test" });
 
             if (httpResponse.IsSuccessStatusCode)
             {
