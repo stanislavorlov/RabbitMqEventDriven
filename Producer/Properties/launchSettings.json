@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Producer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:60207;http://localhost:60208"
+    }
+  }
+}
