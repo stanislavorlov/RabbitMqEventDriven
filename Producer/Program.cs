@@ -1,10 +1,19 @@
-﻿namespace Producer
+﻿using MassTransit;
+
+namespace Producer
 {
     public class Program
     {
         public static void Main(string[]args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddMassTransit(x =>
+            {
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                });
+            });
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

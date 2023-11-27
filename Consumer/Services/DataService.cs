@@ -1,4 +1,6 @@
-﻿namespace Consumer.Services
+﻿using Messages;
+
+namespace Consumer.Services
 {
     public class DataService
     {
@@ -6,12 +8,12 @@
 
         public DataService() { }
 
-        public void AddItem(string message)
+        public void AddItem(TestMessage message)
         {
             messages.Add(new ConsumedMessage { Message = message, IsRead = false });
         }
 
-        public List<string?> GetItems()
+        public List<TestMessage?> GetItems()
         {
             var items = messages.Where(m => !m.IsRead).ToList();
 
@@ -24,7 +26,7 @@
         {
             public bool IsRead { get; set; }
 
-            public string? Message { get; set; }
+            public TestMessage? Message { get; set; }
         }
     }
 }

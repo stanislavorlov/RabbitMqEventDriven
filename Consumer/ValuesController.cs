@@ -1,4 +1,5 @@
 ﻿using Consumer.Services;
+using Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +22,7 @@ namespace Consumer
 
         // GET: api/<Action>
         [HttpGet]
-        public IEnumerable<string?> Get()
+        public IEnumerable<TestMessage?> Get()
         {
             return _dataService.GetItems();
         }
